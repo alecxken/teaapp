@@ -66,6 +66,12 @@ Route::get('sendmessage', [FarmerController::class, 'sendmessage'])->name('get.s
 
 Route::get('new-collection', [FarmerController::class, 'newcollection'])->name('get.collection');
 
+Route::get('new-payment', [FarmerController::class, 'newpayment'])->name('get.payment');
+
+Route::get('get-payment', [FarmerController::class, 'getpayments'])->name('index.payment');
+
+
+Route::post('/store-payment', [FarmerController::class, 'storepayment'])->name('payment.store');
 
 Route::post('/store-collection', [FarmerController::class, 'storecollection'])->name('collection.store');
 

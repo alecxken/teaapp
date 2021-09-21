@@ -41,6 +41,16 @@ class FarmerController extends Controller
     	return view('clerk.produce',compact('farmers'));
     }
 
+        public function newpayment()
+    {
+    	$farmers = CollectionDetail::leftJoin('farmers', 'collection_details.farmer_id', '=', 'farmers.id')
+        ->select('collection_details.*','farmers.sname','farmers.fname')->get();
+
+        
+    //	$farmers = CollectionDetail::join()->where('status','Received');
+    	return view('clerk.payment',compact('farmers'));
+    }
+
 
 
     public function getfarmer()
@@ -58,9 +68,26 @@ class FarmerController extends Controller
     	
     }
 
+        public function getpayments()
+    {
+    	 $faculties = PaymentDetail::query();
+        return Datatables::of($faculties)->addColumn('action', function ($faculties) {
+
+            return '<div class="btn-group" role="group" aria-label="user">
+                       <button id="getEditProductData" class="btn btn-xs btn-success  label-sm  open-modalss" value="'.$faculties->id.'"><i class="fa fa-eye"></i></button>
+                        <a href="/farmer_destroy/'.$faculties->id.'" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i> </a>
+                      
+                    </div>';
+              
+        })->make(true);
+    	
+    }
+
+    
+
     public function getcollections()
     {
-    	 $faculties = CollectionDetail::query();
+    	 $faculties = CollectionDetail::where('status','Received')->get();
         return Datatables::of($faculties)->addColumn('action', function ($faculties) {
 
             return '<div class="btn-group" role="group" aria-label="user">
@@ -137,7 +164,7 @@ class FarmerController extends Controller
 
 		$farmer = Farmer::all()->where('id',$request->input('farmer_id'))->first();
 
-		$username = 'dymaholding'; // use 'sandbox' for development in the test environment
+		$username = 'Dymaholding'; // use 'sandbox' for development in the test environment
 		$apiKey   = 'a04ac6aa0c8439c6ad748a95bc21c100075f8495e79f81a1da58b89c92495b75'; // use your sandbox app API key for development in the test environment
 		$AT       = new AfricasTalking($username, $apiKey);
 
@@ -152,6 +179,45 @@ class FarmerController extends Controller
 
 		return back()->with('status','successfuly registered');
     }
+
+       public function storepayment(Request $request)
+       {
+    	 $this->validate($request, [
+                                      'transaction_id' => 'required|unique:payment_details',
+                                      'total_cost' => 'required:numeric',
+                                      'paymentdate' => 'required',
+                                      'payment_mode' => 'required',
+                                   
+                                  ]
+                                ); 
+
+    	 	$coll = CollectionDetail::all()->where('transaction_id',$request->input('transaction_id'))->first();
+
+    	 	$col = CollectionDetail::findorfail($coll->id);
+    	 	$col->status = 'Paid';
+    	 	$col->save();
+
+
+    	 	$data = new PaymentDetail();
+
+			$data->farmer_id = $coll->farmer_id;
+
+			$data->paymentdate = $request->input('paymentdate');
+
+			$data->transaction_id = $coll->transaction_id;
+
+			$data->total_cost = $request->input('total_cost');
+
+			$data->payment_mode = $request->input('payment_mode');
+
+			$data->status = 'Paid';
+
+			$data->save();
+
+			return back()->with('status','successfuly Paid');
+
+
+    	}
 
     public function sendmessage()
     {
