@@ -81,6 +81,10 @@ Route::get('new-farmer', [FarmerController::class, 'newfarmer'])->name('get.farm
 
 Route::get('get-farmer', [FarmerController::class, 'getfarmer'])->name('index.farmers');
 
+Route::get('/farmer_destroy/{id}', [FarmerController::class, 'destroyfarmer'])->name('farmer.destroy');
+
+Route::get('/collection_destroy/{id}', [FarmerController::class, 'destroycollection'])->name('collection.destroy');
+
 Route::post('/store-farmer', [FarmerController::class, 'storefarmer'])->name('farmers.store');
 
 Route::get('getusersnow', [UserController::class, 'anyData'])->name('get.users');

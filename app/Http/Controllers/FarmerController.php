@@ -46,7 +46,7 @@ class FarmerController extends Controller
     	$farmers = CollectionDetail::leftJoin('farmers', 'collection_details.farmer_id', '=', 'farmers.id')
         ->select('collection_details.*','farmers.sname','farmers.fname')->get();
 
-        
+
     //	$farmers = CollectionDetail::join()->where('status','Received');
     	return view('clerk.payment',compact('farmers'));
     }
@@ -91,8 +91,8 @@ class FarmerController extends Controller
         return Datatables::of($faculties)->addColumn('action', function ($faculties) {
 
             return '<div class="btn-group" role="group" aria-label="user">
-                       <button id="getEditProductData" class="btn btn-xs btn-success  label-sm  open-modalss" value="'.$faculties->id.'"><i class="fa fa-eye"></i></button>
-                        <a href="/farmer_destroy/'.$faculties->id.'" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i> </a>
+                     
+                        <a href="/collection_destroy/'.$faculties->id.'" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i> </a>
                       
                     </div>';
               
@@ -131,6 +131,24 @@ class FarmerController extends Controller
 
 
     	
+    }
+
+    public function destroyfarmer($id)
+    {
+    	$data = Farmer::findorfail($id);
+    	$data->delete();
+
+    	return back()->with('danger','successfuly Deleted '.$data->fname.' ');
+
+    }
+
+    public function destroycollection($id)
+    {
+    	$data = CollectionDetail::findorfail($id);
+    	$data->delete();
+
+    	return back()->with('danger','successfuly Deleted '.$data->transaction_id.' ');
+
     }
 
      public function storecollection(Request $request)

@@ -33,7 +33,7 @@
                <th>Total_cost</th> 
                <th>Mode</th>     
                <th>Status</th>
-                <th>Action</th>   
+             <!--    <th>Action</th>    -->
               
            </tr>
         </thead>
@@ -55,7 +55,7 @@ $(function() {
             { data: 'total_cost', name: 'total_cost' },
             { data: 'payment_mode', name: 'payment_mode' },
             { data: 'status', name: 'status' },
-            { data: 'action', name: 'action' },
+            // { data: 'action', name: 'action' },
 
         ]
     });
